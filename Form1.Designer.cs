@@ -28,6 +28,7 @@ namespace buttonCowboy
                 this.lasso[i].TabIndex = i;
                 this.lasso[i].Text = "btn" + i;
                 this.lasso[i].UseVisualStyleBackColor = true;
+                this.lasso[i].Click += new System.EventHandler(this.node_Click);
                 Controls.Add(lasso[i]);
             }
 
@@ -71,7 +72,7 @@ namespace buttonCowboy
         }
 
         #endregion
-
+        
     }
 
 

@@ -18,5 +18,9 @@ namespace buttonCowboy
             initLasso();
         }
 
+        private void node_Click(object sender, EventArgs e)
+        {
+            Button (Button)sender;
+        }
     }
 }
