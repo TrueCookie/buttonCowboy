@@ -6,34 +6,7 @@ namespace buttonCowboy
 {
     partial class Form1
     {
-        private const int LASSO_LENGTH = 12;
-        private const int BTN_POINT_X = 720;
-        private const int BTN_POINT_Y = 420;
-        private const int BTN_SIZE = 70;
-        private const int BTN_SHIFT = 30;
 
-        private Button[] lasso;
-        
-        private void initLasso()
-        {
-            lasso = new Button[LASSO_LENGTH];
-
-            this.SuspendLayout();
-            
-            for (int i = 0; i < LASSO_LENGTH; ++i) {
-                this.lasso[i] = new Button();
-                this.lasso[i].Location = new System.Drawing.Point(BTN_POINT_X - BTN_SHIFT * i, BTN_POINT_Y - BTN_SHIFT * i);
-                this.lasso[i].Name = "btn"+i;
-                this.lasso[i].Size = new System.Drawing.Size(BTN_SIZE, BTN_SIZE);
-                this.lasso[i].TabIndex = i;
-                this.lasso[i].Text = "btn" + i;
-                this.lasso[i].UseVisualStyleBackColor = true;
-                this.lasso[i].Click += new System.EventHandler(this.node_Click);
-                Controls.Add(lasso[i]);
-            }
-
-            this.ResumeLayout(false);
-        }
 
         /// <summary>
         /// Required designer variable.
@@ -61,18 +34,30 @@ namespace buttonCowboy
         /// </summary>
         private void InitializeComponent()
         {
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(645, 176);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(1079, 614);
+            this.Controls.Add(this.button1);
             this.Name = "Form1";
             this.ResumeLayout(false);
-
         }
 
         #endregion
-        
+
+        private Button button1;
     }
 
 

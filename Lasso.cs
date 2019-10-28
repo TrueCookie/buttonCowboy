@@ -2,27 +2,39 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-    public class Lasso
+namespace buttonCowboy
+{
+    public class Lasso : Control
     {
+        private const int LASSO_LENGTH = 12;
         private const int BTN_SIZE = 70;
         private const int BTN_SHIFT = 35;
 
         private Button[] nodes;
-        private int nodeNum = 0;
 
-        public Lasso(int lenght, Point beginPoint)
+        public Lasso(int lenght, Point beginPoint, Action<object, EventArgs> node_Click)
         {
             nodes = new Button[lenght];
-            foreach (Button node in nodes)
-            {                
-                ++nodeNum;
-                node.Location = new Point(beginPoint.X - BTN_SHIFT * nodeNum, beginPoint.Y - BTN_SHIFT * nodeNum);
-                node.Name = "node";
-                node.Size = new System.Drawing.Size(BTN_SIZE, BTN_SIZE);
-                node.TabIndex = 0;
-                node.UseVisualStyleBackColor = true;
-                node.BackColor = Color.Aqua;    //TODO: add method for init color
+            for (int i = 0; i < LASSO_LENGTH; ++i)
+            {
+                nodes[i] = new Button();
+                nodes[i].Location = new System.Drawing.Point(beginPoint.X - BTN_SHIFT * i, beginPoint.Y - BTN_SHIFT * i);
+                nodes[i].Name = "btn" + i;
+                nodes[i].Size = new System.Drawing.Size(BTN_SIZE, BTN_SIZE);
+                nodes[i].TabIndex = i;
+                nodes[i].Text = "btn" + i;
+                nodes[i].UseVisualStyleBackColor = true;
+                nodes[i].Click += new EventHandler(node_Click);
+                //Controls.Add(nodes[i]);
             }
         }
-        //public Button[] Nodes { get => nodes; set => nodes = value; }
+
+        public void spin()
+        {
+            foreach (Button node in nodes)
+            {
+                node.BackColor = Color.DarkOrange;
+            }
+        }
     }
+}
