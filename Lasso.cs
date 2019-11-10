@@ -8,7 +8,6 @@ namespace buttonCowboy
     {
         private const int BTN_SIZE = 70;
         private const int BTN_SHIFT = 35;
-
         private Button[] nodes;
 
         public Lasso(int lenght, Point beginPoint, Action<object, EventArgs> node_Click)
@@ -51,6 +50,13 @@ namespace buttonCowboy
             {
                 node.BackColor = Color.DarkOrange;
             }
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            this.ResumeLayout(false);
+
         }
     }
 }
