@@ -12,7 +12,6 @@ namespace buttonCowboy
 {
     public partial class Form1 : Form
     {
-
         private const int LASSO_LENGTH = 12;
         private const int BTN_POINT_X = 720;
         private const int BTN_POINT_Y = 420;
@@ -20,7 +19,6 @@ namespace buttonCowboy
         private const int BTN_SHIFT = 30;
 
         private Button[] lasso;
-
         private void initLasso()
         {
             lasso = new Button[LASSO_LENGTH];
@@ -36,28 +34,22 @@ namespace buttonCowboy
                 this.lasso[i].TabIndex = i;
                 this.lasso[i].Text = "btn" + i;
                 this.lasso[i].UseVisualStyleBackColor = true;
-                this.lasso[i].Click += new System.EventHandler(this.node_Click);
+                //this.lasso[i].Click += new System.EventHandler(this.node_Click);
                 Controls.Add(lasso[i]);
             }
-
             this.ResumeLayout(false);
         }
-        //private const int LASSO_LENGTH = 12;
-        //private const int BTN_POINT_X = 720;
-        //private const int BTN_POINT_Y = 420;
-        ////private Lasso lasso;
 
+        //private Lasso lasso;
         private Point origin = new Point(BTN_POINT_X, BTN_POINT_Y);
 
-        //private void initLasso()
-        //{
-        //    Lasso lasso = new Lasso(LASSO_LENGTH, origin, node_Click);
-        //    this.SuspendLayout();
-        //    this.Controls.Add(lasso);
-        //    this.ResumeLayout(false);
-        //}
-
-        //public Lasso Lasso { get => lasso; set => lasso = value; } 
+        /*private void initLasso()
+        {
+            lasso = new Lasso(LASSO_LENGTH, origin, node_Click);
+            this.SuspendLayout();
+            this.Controls.Add(this.lasso);
+            this.ResumeLayout(false);
+        }*/
 
         public Form1()
         {

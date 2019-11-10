@@ -6,7 +6,6 @@ namespace buttonCowboy
 {
     public class Lasso : Control
     {
-        private const int LASSO_LENGTH = 12;
         private const int BTN_SIZE = 70;
         private const int BTN_SHIFT = 35;
 
@@ -15,7 +14,7 @@ namespace buttonCowboy
         public Lasso(int lenght, Point beginPoint, Action<object, EventArgs> node_Click)
         {
             nodes = new Button[lenght];
-            int i = 0;
+            /*int i = 0;
             nodes = new Button[12];
             foreach (Button node in nodes)
             {
@@ -29,8 +28,8 @@ namespace buttonCowboy
                 node.Click += new EventHandler(node_Click);
                 //Controls.Add(nodes[i]);
                 i++;
-            }
-            /*for (int i = 0; i < LASSO_LENGTH; ++i)
+            }*/
+            for (int i = 0; i < lenght; ++i)
             {
                 nodes[i] = new Button();
                 nodes[i].Location = new System.Drawing.Point(beginPoint.X - BTN_SHIFT * i, beginPoint.Y - BTN_SHIFT * i);
@@ -39,10 +38,12 @@ namespace buttonCowboy
                 nodes[i].TabIndex = i;
                 nodes[i].Text = "btn" + i;
                 nodes[i].UseVisualStyleBackColor = true;
-                nodes[i].Click += new EventHandler(node_Click);
-                //Controls.Add(nodes[i]);
-            }*/
+                //nodes[i].Click += new EventHandler(node_Click);
+                Controls.Add(nodes[i]);
+            }
         }
+
+        //public Lasso Lasso { get => lasso; set => lasso = value; } 
 
         public void spin()
         {
