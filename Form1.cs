@@ -24,6 +24,22 @@ namespace buttonCowboy
         private int turnEnd;
         private bool inverseOrder = false;
 
+        int[] blueIndex = new int[] { 1, 3, 5, 6, 7, 10};
+
+        /*private void initLasso()
+        {
+            lasso = new Lasso(LASSO_LENGTH, origin, node_Click);
+            this.SuspendLayout();
+            this.Controls.Add(this.lasso);
+            this.ResumeLayout(false);
+        }*/
+
+        public Form1()
+        {
+            InitializeComponent();  
+            initLasso();
+        }
+
         private void initLasso()    //should i do write this method just in this class, reallly?
         {
             lasso = new Button[LASSO_LENGTH];
@@ -40,29 +56,24 @@ namespace buttonCowboy
                 this.lasso[i].Text = "btn" + i;
                 this.lasso[i].UseVisualStyleBackColor = true;
                 this.lasso[i].Click += new System.EventHandler(this.node_Click);
+                if(isBlue(lasso[i].TabIndex)){ this.lasso[i].BackColor = Color.Blue; }
                 Controls.Add(lasso[i]);
             }
             this.ResumeLayout(false);
         }
 
-        /*private void initLasso()
-        {
-            lasso = new Lasso(LASSO_LENGTH, origin, node_Click);
-            this.SuspendLayout();
-            this.Controls.Add(this.lasso);
-            this.ResumeLayout(false);
-        }*/
-
-        public Form1()
-        {
-            InitializeComponent();  
-            initLasso();
+        public bool isBlue(int btnIndex) {
+            for (int i = 0; i < blueIndex.Length; i++) {
+                if (blueIndex[i] == btnIndex) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void node_Click(object sender, EventArgs e)
         {
             Button clickedBtn = (Button)sender;
-            clickedBtn.BackColor = Color.Chocolate;
             if (inverseOrder)
             {
                 turnBegin = clickedBtn.TabIndex;
@@ -78,7 +89,7 @@ namespace buttonCowboy
             for (int i = turnBegin; i <= turnEnd; ++i)
             {
                 curLocation = new Point(lasso[i+1].Location.X, lasso[i+1].Location.Y);
-                if (lasso[i+1].Location.X > prevLocation.X
+                /*if (lasso[i+1].Location.X > prevLocation.X
                     && lasso[i + 1].Location.Y < prevLocation.Y)
                 {
                     lasso[i + 1].Location = new Point(lasso[i].Location.X + BTN_SHIFT, lasso[i].Location.Y + BTN_SHIFT);
@@ -97,7 +108,19 @@ namespace buttonCowboy
                    && lasso[i + 1].Location.Y < prevLocation.Y)
                 {
                     lasso[i + 1].Location = new Point(lasso[i].Location.X + BTN_SHIFT, lasso[i].Location.Y - BTN_SHIFT);
-                }
+                }*/
+                int pointX, pointY;
+                int posSignX, posSignY, colorSign;
+                colorSign = isBlue(clickedBtn.TabIndex) ? -1 : 1;
+                   
+                posSignY = (lasso[i + 1].Location.X > prevLocation.X) ? 1 : -1;
+                pointY = lasso[i].Location.Y + colorSign * posSignY * BTN_SHIFT;
+
+                posSignX = (lasso[i + 1].Location.Y > prevLocation.Y) ? -1 : 1;
+                pointX = lasso[i].Location.X + colorSign * posSignX * BTN_SHIFT;
+
+                lasso[i + 1].Location = new Point(pointX, pointY);
+
                 prevLocation = curLocation;
             }
         }
