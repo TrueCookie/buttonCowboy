@@ -38,7 +38,9 @@ namespace buttonCowboy
             // 
             this.ClientSize = new System.Drawing.Size(1079, 614);
             this.Name = "Form1";
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Form1_Click);
             this.ResumeLayout(false);
+
         }
 
         #endregion

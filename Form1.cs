@@ -12,7 +12,7 @@ namespace buttonCowboy
 {
     public partial class Form1 : Form
     {
-        private const int LASSO_LENGTH = 12;
+        private const int LASSO_LENGTH = 6;
         private const int BTN_POINT_X = 720;
         private const int BTN_POINT_Y = 420;
         private const int BTN_SIZE = 70;
@@ -71,44 +71,63 @@ namespace buttonCowboy
             return false;
         }
 
-        private void node_Click(object sender, EventArgs e)
-        {
-            Button clickedBtn = (Button)sender;
+        public bool isEnd(int i) {
             if (inverseOrder)
             {
-                turnBegin = clickedBtn.TabIndex;
-                turnEnd = 1;
+                return i > 1;
             }
             else
             {
-                turnBegin = clickedBtn.TabIndex;
-                turnEnd = LASSO_LENGTH - 2;
+                return i <= LASSO_LENGTH - 2;
             }
+        }
+
+        private void node_Click(object sender, EventArgs e)
+        {
+            Button clickedBtn = (Button)sender;
+            int orderSign = 1;
             Point prevLocation = new Point(lasso[turnBegin].Location.X, lasso[turnBegin].Location.Y);
             Point curLocation;
-            for (int i = turnBegin; i <= turnEnd; ++i)
+            turnBegin = clickedBtn.TabIndex;
+            turnEnd = LASSO_LENGTH - 1;
+
+            /*if (inverseOrder)
             {
-                curLocation = new Point(lasso[i+1].Location.X, lasso[i+1].Location.Y);
-                /*if (lasso[i+1].Location.X > prevLocation.X
-                    && lasso[i + 1].Location.Y < prevLocation.Y)
-                {
-                    lasso[i + 1].Location = new Point(lasso[i].Location.X + BTN_SHIFT, lasso[i].Location.Y + BTN_SHIFT);
-                }
-                else if (lasso[i + 1].Location.X > prevLocation.X
-                   && lasso[i + 1].Location.Y > prevLocation.Y)
-                {
-                    lasso[i + 1].Location = new Point(lasso[i].Location.X - BTN_SHIFT, lasso[i].Location.Y + BTN_SHIFT);
-                }
-                else if (lasso[i + 1].Location.X < prevLocation.X
-                   && lasso[i + 1].Location.Y > prevLocation.Y)
-                {
-                    lasso[i + 1].Location = new Point(lasso[i].Location.X - BTN_SHIFT, lasso[i].Location.Y - BTN_SHIFT);
-                }
-                else if (lasso[i + 1].Location.X < prevLocation.X
-                   && lasso[i + 1].Location.Y < prevLocation.Y)
-                {
-                    lasso[i + 1].Location = new Point(lasso[i].Location.X + BTN_SHIFT, lasso[i].Location.Y - BTN_SHIFT);
-                }*/
+                turnEnd = 1;
+                orderSign = -1;
+            }
+            else
+            {
+                turnEnd = LASSO_LENGTH - 2;
+                orderSign = 1;
+            }*/
+
+            /*int i = turnBegin;
+            while (!isEnd(i))
+            {
+                curLocation = new Point(lasso[i + 1].Location.X, lasso[i + 1].Location.Y);
+
+                int pointX, pointY;
+                int posSignX, posSignY, colorSign;
+                colorSign = isBlue(clickedBtn.TabIndex) ? -1 : 1;
+
+                posSignY = (lasso[i + orderSign*1].Location.X > prevLocation.X) ? 1 : -1;
+                pointY = lasso[i].Location.Y + colorSign * posSignY * BTN_SHIFT;
+
+                posSignX = (lasso[i + orderSign * 1].Location.Y > prevLocation.Y) ? -1 : 1;
+                pointX = lasso[i].Location.X + colorSign * posSignX * BTN_SHIFT;
+
+                lasso[i + orderSign * 1].Location = new Point(pointX, pointY);
+
+                prevLocation = curLocation;
+
+                i = inverseOrder ? i - 1 : i + 1;
+            }*/
+
+            for (int i = turnBegin; i < turnEnd; ++i)
+            {
+                curLocation = new Point(lasso[i + 1].Location.X, lasso[i + 1].Location.Y);
+                
                 int pointX, pointY;
                 int posSignX, posSignY, colorSign;
                 colorSign = isBlue(clickedBtn.TabIndex) ? -1 : 1;
@@ -123,7 +142,24 @@ namespace buttonCowboy
 
                 prevLocation = curLocation;
             }
+
         }
 
+        private void Form1_Click(object sender, MouseEventArgs e)
+        {
+            for (int i = 0; i < LASSO_LENGTH; i++) {
+                if (inverseOrder)
+                {
+                    lasso[i].SendToBack();
+                    lasso[i].TabIndex = LASSO_LENGTH-1 - i;
+                }
+                else
+                {
+                    lasso[i].BringToFront();
+                    lasso[i].TabIndex = i;
+                }
+            }
+            inverseOrder = !inverseOrder;
+        }
     }
 }
