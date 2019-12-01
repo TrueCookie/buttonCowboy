@@ -10,9 +10,9 @@ namespace buttonCowboy
         private const int BTN_SHIFT = 35;
         private Button[] nodes;
 
-        public Lasso(int lenght, Point beginPoint, Action<object, EventArgs> node_Click)
+        public Lasso(int length, Point beginPoint, Action<object, EventArgs> node_Click)
         {
-            nodes = new Button[lenght];
+            nodes = new Button[length];
             /*int i = 0;
             nodes = new Button[12];
             foreach (Button node in nodes)
@@ -28,7 +28,7 @@ namespace buttonCowboy
                 //Controls.Add(nodes[i]);
                 i++;
             }*/
-            for (int i = 0; i < lenght; ++i)
+            for (int i = 0; i < length; ++i)
             {
                 nodes[i] = new Button();
                 nodes[i].Location = new System.Drawing.Point(beginPoint.X - BTN_SHIFT * i, beginPoint.Y - BTN_SHIFT * i);
