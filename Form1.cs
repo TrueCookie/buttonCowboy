@@ -84,7 +84,7 @@ namespace buttonCowboy
         {
             Button clickedBtn = (Button)sender;
             int turnOrigin = clickedBtn.TabIndex;
-            Point prevLocation = new Point(lasso[turnOrigin].Location.X, lasso[turnOrigin].Location.Y);
+            Point oldPrevLocation = new Point(lasso[turnOrigin].Location.X, lasso[turnOrigin].Location.Y);
 
             int orderSign;
             if (inverseOrder)
@@ -99,100 +99,69 @@ namespace buttonCowboy
             Point curLocation;
 
             int i = turnOrigin;
+            //btn should base on the old pos of prev btn,
+            //but calc new location from new pos of prev btn
+
+            /*
+             * oldPrevLocation - old pos of prev btn   
+             * prevLocation - pos of prev btn   
+             * curLocation - location of this btn
+             */
             while (!isEnd(i))
             {
                 curLocation = new Point(lasso[i + orderSign].Location.X, lasso[i + orderSign].Location.Y);
+                Point prevLocation = new Point(lasso[i].Location.X, lasso[i].Location.Y);
                 if (isBlue(clickedBtn.TabIndex)) {//if blue
-                    if (curLocation.X > prevLocation.X & curLocation.Y < prevLocation.Y) {
-                        lasso[i].Location = new Point(curLocation.X - BTN_SHIFT, curLocation.Y - BTN_SHIFT);
+                    if (curLocation.X > oldPrevLocation.X & curLocation.Y < oldPrevLocation.Y) {
+                        lasso[i + orderSign].Location = new Point(prevLocation.X - BTN_SHIFT, prevLocation.Y - BTN_SHIFT);
                     }
-                    else if (curLocation.X > prevLocation.X & curLocation.Y > prevLocation.Y)
+                    else if (curLocation.X > oldPrevLocation.X & curLocation.Y > oldPrevLocation.Y)
                     {
-                        lasso[i].Location = new Point(curLocation.X + BTN_SHIFT, curLocation.Y - BTN_SHIFT);
+                        lasso[i + orderSign].Location = new Point(prevLocation.X + BTN_SHIFT, prevLocation.Y - BTN_SHIFT);
                     }
-                    else if (curLocation.X < prevLocation.X & curLocation.Y > prevLocation.Y)
+                    else if (curLocation.X < oldPrevLocation.X & curLocation.Y > oldPrevLocation.Y)
                     {
-                        lasso[i].Location = new Point(curLocation.X + BTN_SHIFT, curLocation.Y + BTN_SHIFT);
+                        lasso[i + orderSign].Location = new Point(prevLocation.X + BTN_SHIFT, prevLocation.Y + BTN_SHIFT);
                     }
-                    else if (curLocation.X < prevLocation.X & curLocation.Y < prevLocation.Y)
+                    else if (curLocation.X < oldPrevLocation.X & curLocation.Y < oldPrevLocation.Y)
                     {
-                        lasso[i].Location = new Point(curLocation.X - BTN_SHIFT, curLocation.Y + BTN_SHIFT);
+                        lasso[i + orderSign].Location = new Point(prevLocation.X - BTN_SHIFT, prevLocation.Y + BTN_SHIFT);
                     }
                 } else{//if white
-                    if (curLocation.X > prevLocation.X & curLocation.Y < prevLocation.Y)
+                    if (curLocation.X > oldPrevLocation.X & curLocation.Y < oldPrevLocation.Y)
                     {
-                        lasso[i].Location = new Point(curLocation.X + BTN_SHIFT, curLocation.Y + BTN_SHIFT);
+                        lasso[i + orderSign].Location = new Point(prevLocation.X + BTN_SHIFT, prevLocation.Y + BTN_SHIFT);
                     }
-                    else if (curLocation.X > prevLocation.X & curLocation.Y > prevLocation.Y)
+                    else if (curLocation.X > oldPrevLocation.X & curLocation.Y > oldPrevLocation.Y)
                     {
-                        lasso[i].Location = new Point(curLocation.X - BTN_SHIFT, curLocation.Y + BTN_SHIFT);
+                        lasso[i + orderSign].Location = new Point(prevLocation.X - BTN_SHIFT, prevLocation.Y + BTN_SHIFT);
                     }
-                    else if (curLocation.X < prevLocation.X & curLocation.Y > prevLocation.Y)
+                    else if (curLocation.X < oldPrevLocation.X & curLocation.Y > oldPrevLocation.Y)
                     {
-                        lasso[i].Location = new Point(curLocation.X - BTN_SHIFT, curLocation.Y - BTN_SHIFT);
+                        lasso[i + orderSign].Location = new Point(prevLocation.X - BTN_SHIFT, prevLocation.Y - BTN_SHIFT);
                     }
-                    else if (curLocation.X < prevLocation.X & curLocation.Y < prevLocation.Y)
+                    else if (curLocation.X < oldPrevLocation.X & curLocation.Y < oldPrevLocation.Y)
                     {
-                        lasso[i].Location = new Point(curLocation.X + BTN_SHIFT, curLocation.Y - BTN_SHIFT);
+                        lasso[i + orderSign].Location = new Point(prevLocation.X + BTN_SHIFT, prevLocation.Y - BTN_SHIFT);
                     }
                 }
-                prevLocation = curLocation;
+                oldPrevLocation = curLocation;
 
                 i = inverseOrder ? i - 1 : i + 1;
             }
-
-            /*int i = turnOrigin;
-            while (!isEnd(i))
-            {
-                curLocation = new Point(lasso[i + orderSign].Location.X, lasso[i + orderSign].Location.Y);
-
-                int pointX, pointY;
-                int posSignX, posSignY;
-
-                posSignY = (curLocation.X > prevLocation.X) ? -1 : 1;
-                pointY = lasso[i].Location.Y + colorSign * posSignY * BTN_SHIFT;
-
-                posSignX = (curLocation.Y > prevLocation.Y) ? -1 : 1;
-                pointX = lasso[i].Location.X + colorSign * posSignX * BTN_SHIFT;
-
-                lasso[i + orderSign].Location = new Point(pointX, pointY);
-
-                prevLocation = curLocation;
-
-                i = inverseOrder ? i - 1 : i + 1;
-            }*/
-            /*while (i < LASSO_LENGTH-1)
-            {
-                //curLocation = new Point(lasso[i + orderSign * 1].Location.X, lasso[i + orderSign * 1].Location.Y);
-
-                int pointX, pointY;
-                int posSignX, posSignY;
-
-                posSignY = (lasso[i + orderSign].Location.X > prevLocation.X) ? 1 : -1;
-                pointY = lasso[i].Location.Y + colorSign * posSignY * BTN_SHIFT;
-
-                posSignX = (lasso[i + orderSign].Location.Y > prevLocation.Y) ? -1 : 1;
-                pointX = lasso[i].Location.X + colorSign * posSignX * BTN_SHIFT;
-
-                lasso[i + orderSign * 1].Location = new Point(pointX, pointY);
-
-                //prevLocation = curLocation;
-
-                i = inverseOrder ? i - 1 : i + 1;
-            }*/
         }
 
         private void Form1_Click(object sender, MouseEventArgs e)
         {
-            inverseOrder = !inverseOrder;
+            inverseOrder ^= true;
             for (int i = 0; i < LASSO_LENGTH; i++) {
                 if (inverseOrder)
                 {
-                    lasso[i].SendToBack();
+                    lasso[i].BringToFront();
                 }
                 else
                 {
-                    lasso[i].BringToFront();
+                    lasso[i].SendToBack();
                 }
             }
         }
