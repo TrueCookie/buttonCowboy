@@ -24,14 +24,19 @@ namespace buttonCowboy
         private Point CATTLE_ORIGIN = new Point(420, 280);
         private Button[] lasso, cattle;
         private bool inverseOrder = false;
+        Random rnd = new Random((int)DateTime.Now.Ticks);
+
         private static int points = 0;
         //graphics
         private Point POINTS_LOCATION = new Point(20, 20);
         GroupBox pointsGroupBox;
         TextBox pointsTextBox;
-
         private Point NEW_GAME_BTN_LOCATION = new Point(20, 60);
         private Size NEW_GAME_BTN_SIZE = new Size(130, 60);
+        int GEtextX = Screen.PrimaryScreen.Bounds.Width / 2;
+        int GEtextY = Screen.PrimaryScreen.Bounds.Height / 2;
+
+        private Label gameoverLabel;
 
         int[] blueIndex = new int[] { 1, 3, 5, 6, 7, 10};
 
@@ -42,28 +47,30 @@ namespace buttonCowboy
             InitCattle();
             AddGroupBox();
             InitNewGameBtn();
+
+            gameoverMsg();
         }
 
         private void InitLasso()
         {
             lasso = new Button[LASSO_LENGTH];
 
-            this.SuspendLayout();
+            SuspendLayout();
             for (int i = 0; i < LASSO_LENGTH; ++i)
             {
-                this.lasso[i] = new Button();
-                this.lasso[i].Location = new Point(LASSO_ORIGIN.X - BTN_SHIFT * i, LASSO_ORIGIN.Y - BTN_SHIFT * i);
-                this.lasso[i].Name = "btn" + i;
-                this.lasso[i].Size = new Size(BTN_SIZE, BTN_SIZE);
-                this.lasso[i].TabIndex = i;
-                this.lasso[i].Text = "btn" + i;
-                this.lasso[i].UseVisualStyleBackColor = true;
-                this.lasso[i].Click += new EventHandler(this.lasso_Click);
+                lasso[i] = new Button();
+                lasso[i].Location = new Point(LASSO_ORIGIN.X - BTN_SHIFT * i, LASSO_ORIGIN.Y - BTN_SHIFT * i);
+                lasso[i].Name = "btn" + i;
+                lasso[i].Size = new Size(BTN_SIZE, BTN_SIZE);
+                lasso[i].TabIndex = i;
+                lasso[i].Text = "btn" + i;
+                lasso[i].UseVisualStyleBackColor = true;
+                lasso[i].Click += new EventHandler(lasso_Click);
                 if(isBlue(lasso[i].TabIndex)){ lasso[i].BackColor = Color.Blue; }
                 lasso[i].BringToFront();
                 Controls.Add(lasso[i]);
             }
-            this.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         private void InitNewGameBtn()
@@ -201,6 +208,8 @@ namespace buttonCowboy
 
         private void NewGameBtn_Click(object sender, EventArgs e)
         {
+            gameoverLabel.ResetText();
+
             for (int i = 0; i < LASSO_LENGTH; i++)
             {
                 Controls.Remove(lasso[i]);
@@ -222,17 +231,17 @@ namespace buttonCowboy
         {
             cattle = new Button[LASSO_LENGTH/2];
             Point prevCattleLocation = CATTLE_ORIGIN;
-            this.SuspendLayout();
+            SuspendLayout();
 
             for (int i = 0; i < LASSO_LENGTH/2; ++i)
             {
-                this.cattle[i] = new Button();
-                this.cattle[i].Name = "cattle" + i;
-                this.cattle[i].Size = new Size(BTN_SIZE, BTN_SIZE);
-                this.cattle[i].TabIndex = 50+i;
-                this.cattle[i].Text = "cattle" + i;
-                this.cattle[i].UseVisualStyleBackColor = true;
-                this.cattle[i].BackColor = Color.SaddleBrown;
+                cattle[i] = new Button();
+                cattle[i].Name = "cattle" + i;
+                cattle[i].Size = new Size(BTN_SIZE, BTN_SIZE);
+                cattle[i].TabIndex = 50+i;
+                cattle[i].Text = "cattle" + i;
+                cattle[i].UseVisualStyleBackColor = true;
+                cattle[i].BackColor = Color.SaddleBrown;
 
                 //init cattle location based on random lasso actions            
                 if (i == 0)
@@ -266,12 +275,11 @@ namespace buttonCowboy
                 Controls.Add(cattle[i]);
             }
 
-            this.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         public int randSign()
         {
-            Random rnd = new Random((int)DateTime.Now.Ticks);
             int result = rnd.Next(0, 2);
             if (result == 0)
             {
@@ -314,14 +322,14 @@ namespace buttonCowboy
 
         public void gameoverMsg()
         {
-            Graphics formGraphics = this.CreateGraphics();
-            string GAME_END_TEXT = "COMPLETE!!!";
-            SolidBrush drawBrush = new SolidBrush(Color.Black);
-            int GEtextX = Screen.PrimaryScreen.Bounds.Width / 2;
-            int GEtextY = Screen.PrimaryScreen.Bounds.Height / 2;
-            formGraphics.DrawString(GAME_END_TEXT, new Font("Arial", 16), drawBrush, GEtextX, GEtextY, new StringFormat());
-            drawBrush.Dispose();
-            formGraphics.Dispose();
+            gameoverLabel = new Label();
+            gameoverLabel.AutoSize = true;
+            gameoverLabel.Location = new Point(20, 140);
+            gameoverLabel.Name = "gameoverLabel";
+            const string GAME_END_TEXT = "COMPLETE!!!";
+            gameoverLabel.Text = GAME_END_TEXT;
+            Controls.Add(this.gameoverLabel);
+            gameoverLabel.BringToFront();
         }
 
         public void updateGroupBox()

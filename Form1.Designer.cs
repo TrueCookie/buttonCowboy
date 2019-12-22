@@ -40,6 +40,7 @@ namespace buttonCowboy
             this.Name = "Form1";
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Form1_Click);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
