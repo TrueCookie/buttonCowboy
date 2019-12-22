@@ -9,49 +9,75 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace buttonCowboy
-{
+{   //Form1_Click don't work every 2nd game
+    //points has'nt been reset 
     public partial class Form1 : Form
     {
         private const int LASSO_LENGTH = 6;
+        private const int CATTLE_NUMBER = LASSO_LENGTH/2;
         private const int BTN_POINT_X = 700;
         private const int BTN_POINT_Y = 420;
         private const int BTN_SIZE = 70;
-        private const int BTN_SHIFT = 30;
-        //private Lasso lasso;  
+        private const int BTN_SHIFT = 35;
+
         private Point LASSO_ORIGIN = new Point(BTN_POINT_X, BTN_POINT_Y);
-        private Point CATTLE_ORIGIN = new Point(420, 210);
+        private Point CATTLE_ORIGIN = new Point(420, 280);
         private Button[] lasso, cattle;
         private bool inverseOrder = false;
+        private static int points = 0;
+        //graphics
+        private Point POINTS_LOCATION = new Point(20, 20);
+        GroupBox pointsGroupBox;
+        TextBox pointsTextBox;
+
+        private Point NEW_GAME_BTN_LOCATION = new Point(20, 60);
+        private Size NEW_GAME_BTN_SIZE = new Size(130, 60);
 
         int[] blueIndex = new int[] { 1, 3, 5, 6, 7, 10};
 
         public Form1()
         {
             InitializeComponent();  
-            initLasso();
-            initCattle();
+            InitLasso();
+            InitCattle();
+            AddGroupBox();
+            InitNewGameBtn();
         }
 
-        private void initLasso()
+        private void InitLasso()
         {
             lasso = new Button[LASSO_LENGTH];
 
             this.SuspendLayout();
-
             for (int i = 0; i < LASSO_LENGTH; ++i)
             {
                 this.lasso[i] = new Button();
-                this.lasso[i].Location = new System.Drawing.Point(LASSO_ORIGIN.X - BTN_SHIFT * i, LASSO_ORIGIN.Y - BTN_SHIFT * i);
+                this.lasso[i].Location = new Point(LASSO_ORIGIN.X - BTN_SHIFT * i, LASSO_ORIGIN.Y - BTN_SHIFT * i);
                 this.lasso[i].Name = "btn" + i;
-                this.lasso[i].Size = new System.Drawing.Size(BTN_SIZE, BTN_SIZE);
+                this.lasso[i].Size = new Size(BTN_SIZE, BTN_SIZE);
                 this.lasso[i].TabIndex = i;
                 this.lasso[i].Text = "btn" + i;
                 this.lasso[i].UseVisualStyleBackColor = true;
-                this.lasso[i].Click += new System.EventHandler(this.node_Click);
-                if(isBlue(lasso[i].TabIndex)){ this.lasso[i].BackColor = Color.Blue; }
+                this.lasso[i].Click += new EventHandler(this.lasso_Click);
+                if(isBlue(lasso[i].TabIndex)){ lasso[i].BackColor = Color.Blue; }
+                lasso[i].BringToFront();
                 Controls.Add(lasso[i]);
             }
             this.ResumeLayout(false);
+        }
+
+        private void InitNewGameBtn()
+        {
+            Button newGameBtn = new Button();
+            SuspendLayout();
+            newGameBtn.Location = NEW_GAME_BTN_LOCATION;
+            newGameBtn.Name = "newGameBtn";
+            newGameBtn.Size = NEW_GAME_BTN_SIZE;
+            newGameBtn.Text = "New Game!";
+            newGameBtn.UseVisualStyleBackColor = true;
+            newGameBtn.Click += new EventHandler(NewGameBtn_Click);
+            Controls.Add(newGameBtn);
+            ResumeLayout(false);
         }
 
         public bool isBlue(int btnIndex) {
@@ -74,7 +100,7 @@ namespace buttonCowboy
             }
         }
 
-        private void node_Click(object sender, EventArgs e)
+        private void lasso_Click(object sender, EventArgs e)
         {
             Button clickedBtn = (Button)sender;
             int turnOrigin = clickedBtn.TabIndex;
@@ -89,7 +115,7 @@ namespace buttonCowboy
             {
                 orderSign = 1;
             }
-            int colorSign = isBlue(clickedBtn.TabIndex) ? -1 : 1;
+            //int colorSign = isBlue(clickedBtn.TabIndex) ? -1 : 1;
             Point curLocation;
 
             int i = turnOrigin;
@@ -105,6 +131,7 @@ namespace buttonCowboy
             {
                 curLocation = new Point(lasso[i + orderSign].Location.X, lasso[i + orderSign].Location.Y);
                 Point prevLocation = new Point(lasso[i].Location.X, lasso[i].Location.Y);
+
                 if (isBlue(clickedBtn.TabIndex)) {//if blue
                     if (curLocation.X > oldPrevLocation.X & curLocation.Y < oldPrevLocation.Y) {
                         lasso[i + orderSign].Location = new Point(prevLocation.X - BTN_SHIFT, prevLocation.Y - BTN_SHIFT);
@@ -143,6 +170,14 @@ namespace buttonCowboy
 
                 i = inverseOrder ? i - 1 : i + 1;
             }
+
+            if (cattlesAreCovered())
+            {
+                gameoverMsg();
+                subtractHandlers();
+            }
+            ++points;
+            updateGroupBox(); 
         }
 
         private void Form1_Click(object sender, MouseEventArgs e)
@@ -158,9 +193,32 @@ namespace buttonCowboy
                     lasso[i].SendToBack();
                 }
             }
+            for (int i = 0; i < LASSO_LENGTH/2; i++)
+            {
+                cattle[i].SendToBack();
+            }
         }
 
-        private void initCattle()
+        private void NewGameBtn_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < LASSO_LENGTH; i++)
+            {
+                Controls.Remove(lasso[i]);
+                lasso[i].Dispose();
+            }
+            for (int i = 0; i < CATTLE_NUMBER; i++)
+            {
+                Controls.Remove(cattle[i]);
+                cattle[i].Dispose();
+            }
+            inverseOrder = false;
+            InitLasso();
+            InitCattle();
+            points = 0;
+            updateGroupBox();
+        }
+
+        private void InitCattle()
         {
             cattle = new Button[LASSO_LENGTH/2];
             Point prevCattleLocation = CATTLE_ORIGIN;
@@ -223,5 +281,64 @@ namespace buttonCowboy
                 return 1;
             }
         }
+
+        public bool cattlesAreCovered()
+        {
+            bool cattleIsCovered;
+            for (int i = 0; i < CATTLE_NUMBER; i++)
+            {
+                cattleIsCovered = false;
+                for (int j = 0; j < LASSO_LENGTH; j++)
+                {
+                    if (cattle[i].Location == lasso[j].Location)
+                    {
+                        cattleIsCovered = true;
+                        break;
+                    }
+                }
+                if (cattleIsCovered == false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public void subtractHandlers()
+        {
+            for (int i = 0; i < LASSO_LENGTH; i++)
+            {
+                lasso[i].Click -= new EventHandler(lasso_Click);
+            }
+        }
+
+        public void gameoverMsg()
+        {
+            Graphics formGraphics = this.CreateGraphics();
+            string GAME_END_TEXT = "COMPLETE!!!";
+            SolidBrush drawBrush = new SolidBrush(Color.Black);
+            int GEtextX = Screen.PrimaryScreen.Bounds.Width / 2;
+            int GEtextY = Screen.PrimaryScreen.Bounds.Height / 2;
+            formGraphics.DrawString(GAME_END_TEXT, new Font("Arial", 16), drawBrush, GEtextX, GEtextY, new StringFormat());
+            drawBrush.Dispose();
+            formGraphics.Dispose();
+        }
+
+        public void updateGroupBox()
+        {
+            pointsTextBox.ResetText();
+            pointsTextBox.Text = "POINTS: " + points;
+        }
+
+        private void AddGroupBox()
+        {
+            pointsGroupBox = new GroupBox();
+            pointsTextBox = new TextBox();
+            pointsTextBox.Location = POINTS_LOCATION;
+            Controls.Add(pointsTextBox);
+            pointsTextBox.Text = "POINTS: " + points;
+        }
+        
+
     }
 }
