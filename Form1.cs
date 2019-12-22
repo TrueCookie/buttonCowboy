@@ -9,12 +9,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace buttonCowboy
-{   //Form1_Click don't work every 2nd game
-    //points has'nt been reset 
+{ 
     public partial class Form1 : Form
     {
         private const int LASSO_LENGTH = 6;
-        private const int CATTLE_NUMBER = LASSO_LENGTH/2;
+        private const int CATTLE_NUMBER = LASSO_LENGTH;
         private const int BTN_POINT_X = 700;
         private const int BTN_POINT_Y = 420;
         private const int BTN_SIZE = 70;
@@ -25,6 +24,8 @@ namespace buttonCowboy
         private Button[] lasso, cattle;
         private bool inverseOrder = false;
         Random rnd = new Random((int)DateTime.Now.Ticks);
+
+        private const string GAME_END_TEXT = "COMPLETE!!!";
 
         private static int points = 0;
         //graphics
@@ -43,12 +44,10 @@ namespace buttonCowboy
         public Form1()
         {
             InitializeComponent();  
-            InitLasso();
             InitCattle();
+            InitLasso();
             AddGroupBox();
             InitNewGameBtn();
-
-            gameoverMsg();
         }
 
         private void InitLasso()
@@ -63,7 +62,6 @@ namespace buttonCowboy
                 lasso[i].Name = "btn" + i;
                 lasso[i].Size = new Size(BTN_SIZE, BTN_SIZE);
                 lasso[i].TabIndex = i;
-                lasso[i].Text = "btn" + i;
                 lasso[i].UseVisualStyleBackColor = true;
                 lasso[i].Click += new EventHandler(lasso_Click);
                 if(isBlue(lasso[i].TabIndex)){ lasso[i].BackColor = Color.Blue; }
@@ -200,7 +198,7 @@ namespace buttonCowboy
                     lasso[i].SendToBack();
                 }
             }
-            for (int i = 0; i < LASSO_LENGTH/2; i++)
+            for (int i = 0; i < CATTLE_NUMBER; i++)
             {
                 cattle[i].SendToBack();
             }
@@ -229,20 +227,19 @@ namespace buttonCowboy
 
         private void InitCattle()
         {
-            cattle = new Button[LASSO_LENGTH/2];
+            cattle = new Button[CATTLE_NUMBER];
             Point prevCattleLocation = CATTLE_ORIGIN;
             SuspendLayout();
 
-            for (int i = 0; i < LASSO_LENGTH/2; ++i)
+            for (int i = 0; i < CATTLE_NUMBER; ++i)
             {
                 cattle[i] = new Button();
                 cattle[i].Name = "cattle" + i;
                 cattle[i].Size = new Size(BTN_SIZE, BTN_SIZE);
                 cattle[i].TabIndex = 50+i;
-                cattle[i].Text = "cattle" + i;
                 cattle[i].UseVisualStyleBackColor = true;
                 cattle[i].BackColor = Color.SaddleBrown;
-
+                cattle[i].SendToBack();
                 //init cattle location based on random lasso actions            
                 if (i == 0)
                 {
@@ -250,19 +247,19 @@ namespace buttonCowboy
                 }
                 else if(i == 1)
                 {
-                    cattle[i].Location = new Point(prevCattleLocation.X + randSign() * BTN_SHIFT * 2,
-                                                        prevCattleLocation.Y + randSign() * BTN_SHIFT * 2);
+                    cattle[i].Location = new Point(prevCattleLocation.X + randSign() * BTN_SHIFT,
+                                                        prevCattleLocation.Y + randSign() * BTN_SHIFT);
                 }
                 else {
                     int j = 0;
                     while (j < i-1)
                     {
-                        Point newCattleLocation = new Point(prevCattleLocation.X + randSign() * BTN_SHIFT + randSign() * BTN_SHIFT,
-                                                        prevCattleLocation.Y + randSign() * BTN_SHIFT + randSign() * BTN_SHIFT);
+                        Point newCattleLocation = new Point(prevCattleLocation.X + randSign() * BTN_SHIFT,
+                                                        prevCattleLocation.Y + randSign() * BTN_SHIFT);
                         if (newCattleLocation == cattle[j].Location)
                         {
-                            newCattleLocation = new Point(prevCattleLocation.X + randSign() * BTN_SHIFT + randSign() * BTN_SHIFT,
-                                                        prevCattleLocation.Y + randSign() * BTN_SHIFT + randSign() * BTN_SHIFT);
+                            newCattleLocation = new Point(prevCattleLocation.X + randSign() * BTN_SHIFT,
+                                                        prevCattleLocation.Y + randSign() * BTN_SHIFT);
                         }
                         else
                         {
@@ -326,7 +323,6 @@ namespace buttonCowboy
             gameoverLabel.AutoSize = true;
             gameoverLabel.Location = new Point(20, 140);
             gameoverLabel.Name = "gameoverLabel";
-            const string GAME_END_TEXT = "COMPLETE!!!";
             gameoverLabel.Text = GAME_END_TEXT;
             Controls.Add(this.gameoverLabel);
             gameoverLabel.BringToFront();
