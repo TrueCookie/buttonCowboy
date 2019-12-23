@@ -18,7 +18,7 @@ namespace buttonCowboy
         private const int BTN_POINT_Y = 420;
 
         private Point lassoOrigin = new Point(BTN_POINT_X, BTN_POINT_Y);
-        private Point CATTLE_ORIGIN = new Point(420, 280);
+        private Point cattleOrigin = new Point(420, 280);
         //private Button[] lasso, cattle;
 
         private Lasso lasso;
@@ -191,52 +191,7 @@ namespace buttonCowboy
 
         private void InitCattle()
         {
-            cattle = new Button[CATTLE_NUMBER];
-            Point prevCattleLocation = CATTLE_ORIGIN;
-            SuspendLayout();
-
-            for (int i = 0; i < CATTLE_NUMBER; ++i)
-            {
-                cattle[i] = new Button();
-                cattle[i].Name = "cattle" + i;
-                cattle[i].Size = new Size(BTN_SIZE, BTN_SIZE);
-                cattle[i].TabIndex = 50+i;
-                cattle[i].UseVisualStyleBackColor = true;
-                cattle[i].BackColor = Color.SaddleBrown;
-                cattle[i].SendToBack();
-                //init cattle location based on random lasso actions            
-                if (i == 0)
-                {
-                    cattle[i].Location = new Point(prevCattleLocation.X, prevCattleLocation.Y);
-                }
-                else if(i == 1)
-                {
-                    cattle[i].Location = new Point(prevCattleLocation.X + randSign() * BTN_SHIFT,
-                                                        prevCattleLocation.Y + randSign() * BTN_SHIFT);
-                }
-                else {
-                    int j = 0;
-                    while (j < i-1)
-                    {
-                        Point newCattleLocation = new Point(prevCattleLocation.X + randSign() * BTN_SHIFT,
-                                                        prevCattleLocation.Y + randSign() * BTN_SHIFT);
-                        if (newCattleLocation == cattle[j].Location)
-                        {
-                            newCattleLocation = new Point(prevCattleLocation.X + randSign() * BTN_SHIFT,
-                                                        prevCattleLocation.Y + randSign() * BTN_SHIFT);
-                        }
-                        else
-                        {
-                            cattle[i].Location = newCattleLocation;
-                            j++;
-                        }
-                    }
-                }
-                prevCattleLocation = cattle[i].Location;
-                Controls.Add(cattle[i]);
-            }
-
-            ResumeLayout(false);
+            cattle = new Cattle();
         }
 
         public int randSign()

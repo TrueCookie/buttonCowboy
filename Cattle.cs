@@ -10,9 +10,17 @@ namespace buttonCowboy
 {
     class Cattle
     {
+        private const int BTN_SIZE = 70;
+        private const int BTN_SHIFT = 35;
+
         private Button[] buttons;
 
-        private void Cattle(Point origin, int number)
+        Point origin;
+        int number;
+
+        Random rnd = new Random((int)DateTime.Now.Ticks);
+
+        public Cattle(Point origin, int number)
         {
             buttons = new Button[number];
             Point prevCattleLocation = origin;
@@ -59,13 +67,12 @@ namespace buttonCowboy
                 Controls.Add(buttons[i]);
             }
 
-            ResumeLayout(false);
         }
 
         public bool cattlesAreCovered()
         {
             bool cattleIsCovered;
-            for (int i = 0; i < CATTLE_NUMBER; i++)
+            for (int i = 0; i < number; i++)
             {
                 cattleIsCovered = false;
                 for (int j = 0; j < LASSO_LENGTH; j++)
@@ -82,6 +89,19 @@ namespace buttonCowboy
                 }
             }
             return true;
+        }
+
+        public int randSign()
+        {
+            int result = rnd.Next(0, 2);
+            if (result == 0)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
         }
     }
 }
