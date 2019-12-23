@@ -16,12 +16,12 @@ namespace buttonCowboy
         private const int CATTLE_NUMBER = LASSO_LENGTH;
         private const int BTN_POINT_X = 700;
         private const int BTN_POINT_Y = 420;
-        private const int BTN_SIZE = 70;
-        private const int BTN_SHIFT = 35;
 
-        private Point LASSO_ORIGIN = new Point(BTN_POINT_X, BTN_POINT_Y);
+        private Point lassoOrigin = new Point(BTN_POINT_X, BTN_POINT_Y);
         private Point CATTLE_ORIGIN = new Point(420, 280);
-        private Button[] lasso, cattle;
+        //private Button[] lasso, cattle;
+
+        private Lasso lasso;
         private bool inverseOrder = false;
         Random rnd = new Random((int)DateTime.Now.Ticks);
 
@@ -52,23 +52,7 @@ namespace buttonCowboy
 
         private void InitLasso()
         {
-            lasso = new Button[LASSO_LENGTH];
-
-            SuspendLayout();
-            for (int i = 0; i < LASSO_LENGTH; ++i)
-            {
-                lasso[i] = new Button();
-                lasso[i].Location = new Point(LASSO_ORIGIN.X - BTN_SHIFT * i, LASSO_ORIGIN.Y - BTN_SHIFT * i);
-                lasso[i].Name = "btn" + i;
-                lasso[i].Size = new Size(BTN_SIZE, BTN_SIZE);
-                lasso[i].TabIndex = i;
-                lasso[i].UseVisualStyleBackColor = true;
-                lasso[i].Click += new EventHandler(lasso_Click);
-                if(isBlue(lasso[i].TabIndex)){ lasso[i].BackColor = Color.Blue; }
-                lasso[i].BringToFront();
-                Controls.Add(lasso[i]);
-            }
-            ResumeLayout(false);
+            lasso = new Lasso(lassoOrigin);
         }
 
         private void InitNewGameBtn()
@@ -85,27 +69,7 @@ namespace buttonCowboy
             ResumeLayout(false);
         }
 
-        public bool isBlue(int btnIndex) {
-            for (int i = 0; i < blueIndex.Length; i++) {
-                if (blueIndex[i] == btnIndex) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool isEnd(int index) {
-            if (inverseOrder)
-            {
-                return index == 0;
-            }
-            else
-            {
-                return index == LASSO_LENGTH - 1;
-            }
-        }
-
-        private void lasso_Click(object sender, EventArgs e)
+        public void lasso_Click(object sender, EventArgs e)
         {
             Button clickedBtn = (Button)sender;
             int turnOrigin = clickedBtn.TabIndex;
